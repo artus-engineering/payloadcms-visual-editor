@@ -1,0 +1,38 @@
+{
+  "name": "@artus-engineering/visual-editor-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "generate:importmap": "cross-env PAYLOAD_CONFIG_PATH=./payload.config.ts payload generate:importmap",
+    "generate:types": "cross-env PAYLOAD_CONFIG_PATH=./payload.config.ts payload generate:types",
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=./payload.config.ts payload",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@artus-engineering/payload-visual-editor": "workspace:*",
+    "@artus-engineering/payload-visual-editor-client": "workspace:*",
+    "@payloadcms/db-mongodb": "3.84.1",
+    "@payloadcms/live-preview": "3.84.1",
+    "@payloadcms/live-preview-react": "3.84.1",
+    "@payloadcms/next": "3.84.1",
+    "@payloadcms/richtext-lexical": "3.84.1",
+    "@payloadcms/ui": "3.84.1",
+    "cross-env": "^7.0.3",
+    "graphql": "^16.8.1",
+    "next": "16.2.6",
+    "payload": "3.84.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "sharp": "0.34.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.9",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "mongodb-memory-server": "10.1.4",
+    "typescript": "5.7.3"
+  }
+}

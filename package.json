@@ -1,0 +1,36 @@
+{
+  "name": "payload-visual-editor-plugin",
+  "private": true,
+  "version": "0.0.0",
+  "license": "SEE LICENSE IN LICENSE",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "pnpm --filter @artus-engineering/payload-visual-editor-client build && pnpm --filter @artus-engineering/payload-visual-editor build",
+    "check": "pnpm typecheck && pnpm lint && pnpm test:unit",
+    "dev": "pnpm --filter @artus-engineering/visual-editor-example dev",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "pnpm test:unit && pnpm test:int && pnpm test:e2e",
+    "test:e2e": "playwright test",
+    "test:int": "vitest run examples/next/int.spec.ts",
+    "test:unit": "vitest run packages",
+    "typecheck": "pnpm --filter @artus-engineering/payload-visual-editor-client typecheck && pnpm --filter @artus-engineering/payload-visual-editor typecheck"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@eslint/eslintrc": "^3.2.0",
+    "@playwright/test": "1.58.2",
+    "@types/node": "22.19.9",
+    "eslint": "^9.23.0",
+    "prettier": "^3.4.2",
+    "typescript": "5.7.3",
+    "typescript-eslint": "^8.28.0",
+    "vite-tsconfig-paths": "6.0.5",
+    "vitest": "4.0.18"
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0",
+    "pnpm": "^9 || ^10"
+  }
+}

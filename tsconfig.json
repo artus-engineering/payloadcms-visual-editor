@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@payload-config": ["./examples/next/payload.config.ts"]
+    }
+  }
+}

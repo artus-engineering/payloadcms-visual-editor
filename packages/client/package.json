@@ -1,0 +1,58 @@
+{
+  "name": "@artus-engineering/payload-visual-editor-client",
+  "version": "0.1.0",
+  "description": "Frontend client SDK for Artus Payload Visual Editor",
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "author": "Artus Engineering",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/artus-engineering/payloadcms-visual-editor"
+  },
+  "keywords": [
+    "payload",
+    "payloadcms",
+    "visual-editor",
+    "live-preview"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react/index.js",
+      "types": "./dist/react/index.d.ts"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "@payloadcms/live-preview": "^3.84.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@payloadcms/live-preview": "3.84.1",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "typescript": "5.7.3"
+  }
+}

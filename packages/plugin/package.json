@@ -1,0 +1,57 @@
+{
+  "name": "@artus-engineering/payload-visual-editor",
+  "version": "0.1.0",
+  "description": "Visual editor for Payload CMS live preview",
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "author": "Artus Engineering",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/artus-engineering/payloadcms-visual-editor"
+  },
+  "keywords": [
+    "payload",
+    "payloadcms",
+    "payload-plugin",
+    "visual-editor",
+    "live-preview"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/exports/client.js",
+      "types": "./dist/exports/client.d.ts"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm copyfiles && tsc -p tsconfig.json",
+    "copyfiles": "node ./scripts/copy-styles.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@artus-engineering/payload-visual-editor-client": "workspace:*"
+  },
+  "peerDependencies": {
+    "@payloadcms/ui": "^3.84.0",
+    "payload": "^3.84.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@payloadcms/ui": "3.84.1",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "payload": "3.84.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "typescript": "5.7.3"
+  }
+}

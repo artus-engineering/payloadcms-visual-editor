@@ -1,0 +1,10 @@
+.artus-visual-editor-toggle {
+  margin-right: 0.5rem;
+}
+
+.artus-visual-editor-hint {
+  align-self: center;
+  font-size: 12px;
+  margin-left: 0.5rem;
+  opacity: 0.75;
+}
