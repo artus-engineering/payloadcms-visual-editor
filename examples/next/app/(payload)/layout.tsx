@@ -20,7 +20,7 @@ const serverFunction: ServerFunctionClient = async function (args) {
   })
 }
 
-export default function PayloadLayout({ children }: Args) {
+export default function PayloadLayout({ children }: Readonly<Args>) {
   return (
     <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
       {children}

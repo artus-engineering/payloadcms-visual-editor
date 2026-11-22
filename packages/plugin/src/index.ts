@@ -6,12 +6,7 @@ import {
   createRelationFallbacksEndpoint,
   type VisualEditorPluginState,
 } from './endpoints/visualEditorEndpoints.js'
-import {
-  DEFAULT_EDITABLE_FIELD_TYPES,
-  type PayloadVisualEditorConfig,
-  type VisualEditorCollectionConfig,
-  type VisualEditorGlobalConfig,
-} from './types.js'
+import { type PayloadVisualEditorConfig, type VisualEditorCollectionConfig } from './types.js'
 
 export const VISUAL_EDITOR_ADMIN_PATH =
   '@artus-engineering/payload-visual-editor/client#VisualEditorControls'
@@ -23,11 +18,11 @@ export type {
   VisualEditorGlobalConfig,
 } from './types.js'
 
-export { DEFAULT_EDITABLE_FIELD_TYPES }
+export { DEFAULT_EDITABLE_FIELD_TYPES } from './types.js'
 
 function isEnabled(
-  config: VisualEditorCollectionConfig | VisualEditorGlobalConfig | undefined,
-): config is VisualEditorCollectionConfig | VisualEditorGlobalConfig {
+  config: VisualEditorCollectionConfig | undefined,
+): config is VisualEditorCollectionConfig {
   return config !== undefined
 }
 
@@ -94,8 +89,7 @@ export const payloadVisualEditor =
     }
 
     const endpoints = config.endpoints ?? []
-    endpoints.push(createFieldsEndpoint(pluginState))
-    endpoints.push(createRelationFallbacksEndpoint(pluginState))
+    endpoints.push(createFieldsEndpoint(pluginState), createRelationFallbacksEndpoint(pluginState))
     config.endpoints = endpoints
 
     return config

@@ -10,7 +10,6 @@ import {
   isModeChangeMessage,
   isSyncFieldsMessage,
   isSyncRelationFallbacksMessage,
-  isTrustedOrigin,
   MESSAGE_TYPES,
   postToAdmin,
   type EditableFieldDescriptor,
@@ -128,7 +127,7 @@ export function VisualEditorListener({
     ready({ serverURL: targetOriginRef.current || window.location.origin })
 
     const onAdminMessage = (event: MessageEvent) => {
-      if (!isTrustedOrigin(event, targetOriginRef.current)) {
+      if (event.origin !== targetOriginRef.current) {
         return
       }
 
@@ -222,7 +221,11 @@ export function veField(path: string): Record<string, string> {
   return createFieldAttributes(path)
 }
 
-export function veBlock(blockPath: string, index: number, blockType: string): Record<string, string> {
+export function veBlock(
+  blockPath: string,
+  index: number,
+  blockType: string,
+): Record<string, string> {
   return createBlockAttributes(blockPath, index, blockType)
 }
 

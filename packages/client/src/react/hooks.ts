@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { isModeChangeMessage, isTrustedOrigin } from '../protocol.js'
+import { isModeChangeMessage } from '../protocol.js'
 
 export function useVisualEditorMode(): boolean {
   const [isLivePreview, setIsLivePreview] = useState(false)
@@ -20,7 +20,7 @@ export function useVisualEditorEditMode(): boolean {
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
-      if (!isTrustedOrigin(event, window.location.origin)) {
+      if (event.origin !== window.location.origin) {
         return
       }
 

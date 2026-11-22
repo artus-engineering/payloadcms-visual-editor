@@ -4,7 +4,6 @@ import {
   isBlockOperationMessage,
   isFieldFocusMessage,
   isFieldUpdateMessage,
-  isTrustedOrigin,
   MESSAGE_TYPES,
   type BlockOperation,
   type EditableFieldDescriptor,
@@ -186,9 +185,10 @@ export const VisualEditorControls = () => {
     let method: 'PATCH' | 'POST' = 'POST'
 
     if (collectionSlug) {
+      const documentPath = id ? `/${id}` : ''
       action = formatAdminURL({
         apiRoute: config.routes.api,
-        path: `/${collectionSlug}${id ? `/${id}` : ''}${search}`,
+        path: `/${collectionSlug}${documentPath}${search}`,
       })
 
       if (id) {
@@ -256,7 +256,7 @@ export const VisualEditorControls = () => {
   }, [saveDraft])
 
   const focusFieldInAdmin = useCallback((path: string) => {
-    const field = document.querySelector<HTMLElement>(`[id^="field-${path.replace(/\./g, '__')}"]`)
+    const field = document.querySelector<HTMLElement>(`[id^="field-${path.replaceAll('.', '__')}"]`)
 
     if (!field) {
       return
@@ -349,7 +349,7 @@ export const VisualEditorControls = () => {
     }
 
     const onMessage = (event: MessageEvent) => {
-      if (!isTrustedOrigin(event, previewOrigin)) {
+      if (event.origin !== previewOrigin) {
         return
       }
 
