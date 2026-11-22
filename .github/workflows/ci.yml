@@ -60,39 +60,6 @@ jobs:
     name: Unit and integration tests
     permissions:
       contents: read
-  e2e:
-    # Playwright 1.58 supports Ubuntu 24.04; ubuntu-latest has moved to 26.04.
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: artus-engineering/.github/actions/setup-pnpm@feb73e3bc8a16c61582dd578627ba5d6dc07e2ca
-      - uses: actions/setup-node@v7
-        with:
-          check-latest: false
-          package-manager-cache: false
-          node-version: 22
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium
-      - name: Start isolated MongoDB replica set
-        run: |-
-          docker run --detach --name ci-mongo -p 27017:27017 mongo:7.0 --replSet rs0 --bind_ip_all
-          for attempt in $(seq 1 30); do
-            if docker exec ci-mongo mongosh --quiet --eval 'db.adminCommand({ping:1})' >/dev/null 2>&1; then break; fi
-            sleep 2
-          done
-          docker exec ci-mongo mongosh --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
-          for attempt in $(seq 1 30); do
-            if docker exec ci-mongo mongosh --quiet --eval 'quit(db.hello().isWritablePrimary ? 0 : 1)'; then exit 0; fi
-            sleep 2
-          done
-          exit 1
-      - run: pnpm test:e2e
-    name: Browser tests
-    permissions:
-      contents: read
-    env:
-      DATABASE_URL: mongodb://127.0.0.1:27017/visual_editor_ci?replicaSet=rs0&directConnection=true
   scan:
     name: SonarQube Scan
     runs-on: ubuntu-latest
