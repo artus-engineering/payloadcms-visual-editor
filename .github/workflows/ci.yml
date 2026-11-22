@@ -6,7 +6,24 @@ on:
   pull_request:
 
 jobs:
-  verify:
+  lint:
+    # Playwright 1.58 supports Ubuntu 24.04; ubuntu-latest has moved to 26.04.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: artus-engineering/.github/actions/setup-pnpm@feb73e3bc8a16c61582dd578627ba5d6dc07e2ca
+      - uses: actions/setup-node@v7
+        with:
+          check-latest: false
+          package-manager-cache: false
+          node-version: 22
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+    name: Lint
+    permissions:
+      contents: read
+  build:
     # Playwright 1.58 supports Ubuntu 24.04; ubuntu-latest has moved to 26.04.
     runs-on: ubuntu-24.04
     steps:
@@ -19,7 +36,55 @@ jobs:
           node-version: 22
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm check
+    name: Build
+    permissions:
+      contents: read
+  tests:
+    # Playwright 1.58 supports Ubuntu 24.04; ubuntu-latest has moved to 26.04.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: artus-engineering/.github/actions/setup-pnpm@feb73e3bc8a16c61582dd578627ba5d6dc07e2ca
+      - uses: actions/setup-node@v7
+        with:
+          check-latest: false
+          package-manager-cache: false
+          node-version: 22
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit tests
+        run: pnpm test:unit
       - run: pnpm test:int
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:e2e
+    name: Unit and integration tests
+    permissions:
+      contents: read
+  scan:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Analyze and enforce quality gate
+        uses: SonarSource/sonarqube-scan-action@v8
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_SCANNER_JAVA_OPTS: -Xmx1024m
+          LANG: C.UTF-8
+        with:
+          args: -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300 -Dsonar.javascript.node.maxspace=3072
+    if: ${{ github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]') }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
