@@ -13,7 +13,7 @@ describe('visual editor plugin integration', () => {
   })
 
   afterAll(async () => {
-    if (payload.db && 'destroy' in payload.db) {
+    if (payload?.db && 'destroy' in payload.db) {
       await (payload.db as { destroy: () => Promise<void> }).destroy()
     }
   })
@@ -29,6 +29,15 @@ describe('visual editor plugin integration', () => {
         { path: 'views', type: 'number' },
       ]),
     )
+  })
+
+  it('provides stable Payload IDs for rendered layout blocks', async () => {
+    const { docs } = await payload.find({ collection: 'pages', limit: 1 })
+    const layout = docs[0]?.layout as Array<{ id: string }> | undefined
+    expect(layout?.length).toBeGreaterThan(0)
+    const ids = layout?.map((block) => block.id) ?? []
+    expect(ids.every((id) => typeof id === 'string' && id.length > 0)).toBe(true)
+    expect(new Set(ids).size).toBe(ids.length)
   })
 
   it('registers visual editor endpoints', () => {

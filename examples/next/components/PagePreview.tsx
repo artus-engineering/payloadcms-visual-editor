@@ -17,7 +17,7 @@ type Props = {
   serverURL: string
 }
 
-export function PagePreview({ initialPage, serverURL }: Props) {
+export function PagePreview({ initialPage, serverURL }: Readonly<Props>) {
   const isLivePreview = useVisualEditorMode()
   const isVisualEditing = useVisualEditorEditMode()
   const [page, setPage] = useState(initialPage)
@@ -75,15 +75,9 @@ export function PagePreview({ initialPage, serverURL }: Props) {
         {page.layout?.map((block, index) => {
           if (block.blockType === 'hero') {
             return (
-              <section
-                className="page__hero"
-                key={`hero-${index}`}
-                {...veBlock('layout', index, 'hero')}
-              >
+              <section className="page__hero" key={block.id} {...veBlock('layout', index, 'hero')}>
                 <h2 {...veField(`layout.${index}.heading`)}>{block.heading}</h2>
-                {block.body ? (
-                  <p {...veField(`layout.${index}.body`)}>{block.body}</p>
-                ) : null}
+                {block.body ? <p {...veField(`layout.${index}.body`)}>{block.body}</p> : null}
               </section>
             )
           }
@@ -91,7 +85,7 @@ export function PagePreview({ initialPage, serverURL }: Props) {
           return (
             <section
               className="page__content-block"
-              key={`content-${index}`}
+              key={block.id}
               {...veBlock('layout', index, 'content')}
             >
               {block.text ? <p {...veField(`layout.${index}.text`)}>{block.text}</p> : null}

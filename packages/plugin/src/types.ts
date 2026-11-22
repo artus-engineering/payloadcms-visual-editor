@@ -18,13 +18,13 @@ export type VisualEditorCollectionConfig =
     }
   | true
 
-export type VisualEditorGlobalConfig = VisualEditorCollectionConfig
+export type { VisualEditorCollectionConfig as VisualEditorGlobalConfig }
 
 export type PayloadVisualEditorConfig = {
   collections?: Record<string, VisualEditorCollectionConfig>
   disabled?: boolean
   editableFieldTypes?: EditableFieldType[]
-  globals?: Record<string, VisualEditorGlobalConfig>
+  globals?: Record<string, VisualEditorCollectionConfig>
 }
 
 export type EditableFieldDescriptor = {

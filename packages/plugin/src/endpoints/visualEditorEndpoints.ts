@@ -10,19 +10,18 @@ import {
   type EditableFieldType,
   type PayloadVisualEditorConfig,
   type VisualEditorCollectionConfig,
-  type VisualEditorGlobalConfig,
 } from '../types.js'
 
 export type VisualEditorPluginState = {
   collections: Map<string, VisualEditorCollectionConfig>
   editableFieldTypes: readonly EditableFieldType[]
-  globals: Map<string, VisualEditorGlobalConfig>
+  globals: Map<string, VisualEditorCollectionConfig>
 }
 
 function resolveCollectionConfig(
   pluginState: VisualEditorPluginState,
   slug: string,
-): VisualEditorCollectionConfig | VisualEditorGlobalConfig | undefined {
+): VisualEditorCollectionConfig | undefined {
   return pluginState.collections.get(slug) ?? pluginState.globals.get(slug)
 }
 

@@ -4,7 +4,7 @@ import { VisualEditorListener } from '@artus-engineering/payload-visual-editor-c
 
 import './globals.css'
 
-export default function FrontendLayout({ children }: { children: ReactNode }) {
+export default function FrontendLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
       <body>

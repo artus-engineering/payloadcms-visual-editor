@@ -10,7 +10,7 @@ type Args = {
   params: Promise<{ slug: string }>
 }
 
-export default async function PageRoute({ params }: Args) {
+export default async function PageRoute({ params }: Readonly<Args>) {
   const { slug } = await params
   const payload = await getPayload({ config })
 

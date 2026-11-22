@@ -62,60 +62,49 @@ export function toDisplayValue(value: unknown, fieldType: EditableFieldDescripto
     return ''
   }
 
-  if (fieldType === 'number') {
-    return String(value)
-  }
-
   if (fieldType === 'richText' && typeof value === 'object') {
     return extractRichText(value)
   }
 
-  if (typeof value === 'string') {
-    return value
+  switch (typeof value) {
+    case 'string':
+      return value
+    case 'number':
+    case 'boolean':
+    case 'bigint':
+    case 'symbol':
+      return String(value)
+    default:
+      return ''
   }
-
-  return String(value)
 }
 
-function extractRichText(value: unknown): string {
+function childText(value: unknown): string[] {
   if (!value || typeof value !== 'object') {
-    return ''
+    return []
   }
 
+  const node = value as { children?: unknown[]; text?: unknown; type?: string }
+  if (node.type === 'text' && typeof node.text === 'string') {
+    return [node.text]
+  }
+
+  if (!Array.isArray(node.children)) {
+    return []
+  }
+
+  return node.children.flatMap((nested) => {
+    if (!nested || typeof nested !== 'object' || !('text' in nested)) {
+      return []
+    }
+    return typeof nested.text === 'string' ? [nested.text] : []
+  })
+}
+
+function extractRichText(value: object): string {
   const root = value as { root?: { children?: unknown[] } }
   const children = root.root?.children
-
-  if (!Array.isArray(children)) {
-    return ''
-  }
-
-  const parts: string[] = []
-
-  for (const child of children) {
-    if (!child || typeof child !== 'object') {
-      continue
-    }
-
-    const node = child as { children?: unknown[]; text?: string; type?: string }
-
-    if (node.type === 'text' && typeof node.text === 'string') {
-      parts.push(node.text)
-      continue
-    }
-
-    if (Array.isArray(node.children)) {
-      for (const nested of node.children) {
-        if (nested && typeof nested === 'object' && 'text' in nested) {
-          const text = (nested as { text?: string }).text
-          if (typeof text === 'string') {
-            parts.push(text)
-          }
-        }
-      }
-    }
-  }
-
-  return parts.join(' ')
+  return Array.isArray(children) ? children.flatMap(childText).join(' ') : ''
 }
 
 export function buildFieldValueEntries(
@@ -128,10 +117,7 @@ export function buildFieldValueEntries(
   }))
 }
 
-export function findFieldPathByText(
-  entries: FieldValueEntry[],
-  text: string,
-): string | undefined {
+export function findFieldPathByText(entries: FieldValueEntry[], text: string): string | undefined {
   const normalized = normalizeComparableText(text)
 
   if (!normalized) {

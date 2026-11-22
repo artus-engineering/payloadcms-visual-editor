@@ -19,60 +19,58 @@ if (!process.env.ROOT_DIR) {
   process.env.ROOT_DIR = dirname
 }
 
-const buildExampleConfig = async () => {
-  if (!process.env.DATABASE_URL?.trim()) {
-    const globalStore = globalThis as typeof globalThis & { _mongoMemoryDBUri?: string }
+if (!process.env.DATABASE_URL?.trim()) {
+  const globalStore = globalThis as typeof globalThis & { _mongoMemoryDBUri?: string }
 
-    if (!globalStore._mongoMemoryDBUri) {
-      const memoryDB = await MongoMemoryReplSet.create({
-        replSet: {
-          count: 3,
-          dbName: 'artus-visual-editor',
-        },
-      })
+  if (!globalStore._mongoMemoryDBUri) {
+    const memoryDB = await MongoMemoryReplSet.create({
+      replSet: {
+        count: 1,
+        dbName: 'artus-visual-editor',
+      },
+    })
 
-      globalStore._mongoMemoryDBUri = `${memoryDB.getUri()}&retryWrites=true`
-    }
-
-    process.env.DATABASE_URL = globalStore._mongoMemoryDBUri
+    globalStore._mongoMemoryDBUri = `${memoryDB.getUri()}&retryWrites=true`
   }
 
-  return buildConfig({
-    admin: {
-      importMap: {
-        baseDir: path.resolve(dirname),
-      },
+  process.env.DATABASE_URL = globalStore._mongoMemoryDBUri
+}
+
+export default buildConfig({
+  admin: {
+    importMap: {
+      baseDir: path.resolve(dirname),
     },
-    collections: [Users, Authors, Pages],
-    db: mongooseAdapter({
-      ensureIndexes: true,
-      url: process.env.DATABASE_URL ?? '',
-    }),
-    editor: lexicalEditor(),
-    onInit: async (payload) => {
-      await seed(payload)
-    },
-    plugins: [
-      payloadVisualEditor({
-        collections: {
-          pages: {
-            excludeFields: ['slug'],
-            relationFallbacks: {
-              authors: {
-                name: 'Anonymous Author',
-              },
+  },
+  collections: [Users, Authors, Pages],
+  db: mongooseAdapter({
+    ensureIndexes: true,
+    url: process.env.DATABASE_URL ?? '',
+  }),
+  editor: lexicalEditor(),
+  onInit: async (payload) => {
+    // Version collection indexes must settle before the seed transaction writes drafts.
+    await Promise.all(Object.values(payload.db.connection.models).map((model) => model.init()))
+    await seed(payload)
+  },
+  plugins: [
+    payloadVisualEditor({
+      collections: {
+        pages: {
+          excludeFields: ['slug'],
+          relationFallbacks: {
+            authors: {
+              name: 'Anonymous Author',
             },
           },
         },
-      }),
-    ],
-    secret: process.env.PAYLOAD_SECRET ?? 'dev-secret-key',
-    serverURL: process.env.NEXT_PUBLIC_SERVER_URL ?? 'http://localhost:3000',
-    sharp,
-    typescript: {
-      outputFile: path.resolve(dirname, 'payload-types.ts'),
-    },
-  })
-}
-
-export default buildExampleConfig()
+      },
+    }),
+  ],
+  secret: process.env.PAYLOAD_SECRET ?? 'dev-secret-key',
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL ?? 'http://localhost:3000',
+  sharp,
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+})

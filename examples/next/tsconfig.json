@@ -5,15 +5,25 @@
     "baseUrl": ".",
     "jsx": "preserve",
     "noEmit": true,
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
       "@/*": ["./*"],
       "@payload-config": ["./payload.config.ts"],
       "@artus-engineering/payload-visual-editor": ["../../packages/plugin/src/index.ts"],
-      "@artus-engineering/payload-visual-editor/client": ["../../packages/plugin/src/exports/client.ts"],
+      "@artus-engineering/payload-visual-editor/client": [
+        "../../packages/plugin/src/exports/client.ts"
+      ],
       "@artus-engineering/payload-visual-editor-client": ["../../packages/client/src/index.ts"],
-      "@artus-engineering/payload-visual-editor-client/react": ["../../packages/client/src/react/index.tsx"]
-    }
+      "@artus-engineering/payload-visual-editor-client/react": [
+        "../../packages/client/src/react/index.tsx"
+      ]
+    },
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
